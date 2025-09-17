@@ -1,4 +1,5 @@
-import { createClient, SupabaseClient, SupabaseClientOptions } from '@supabase/supabase-js'
+import { createBrowserClient } from '@supabase/ssr'
+import { SupabaseClient, SupabaseClientOptions } from '@supabase/supabase-js'
 import { Database } from './database.types'
 
 const options: SupabaseClientOptions<'public'> = {
@@ -7,23 +8,19 @@ const options: SupabaseClientOptions<'public'> = {
     },
     auth: {
         autoRefreshToken: true,
-        persistSession: true,
+        persistSession: false,
         detectSessionInUrl: true,
     },
     global: {
-        headers: { 'x-application-name': 'social-app' },
+        headers: {
+            'x-application-name': 'social-app',
+        },
     },
 }
 
-let supabase: SupabaseClient | null = null
+export function createClient(): SupabaseClient<Database> {
+    const supabaseURL: string = process.env.NEXT_PUBLIC_SUPABASE_URL!
+    const supabaseAnonKey: string = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
-export const getSupabaseClient = (): SupabaseClient => {
-    if (!supabase) {
-        supabase = createClient<Database>(
-            process.env.NEXT_PUBLIC_SUPABASE_URL!,
-            process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-            options
-        )
-    }
-    return supabase
+    return createBrowserClient<Database>(supabaseURL, supabaseAnonKey, options)
 }
