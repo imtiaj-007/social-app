@@ -22,7 +22,14 @@ const authFormSchema = (type: FormType) => {
         password: z.string().min(8, 'Password should be at least 8 characters'),
         username:
             type === 'sign-up'
-                ? z.string().min(3, 'Username must be at least 3 characters')
+                ? z
+                      .string()
+                      .min(3, 'Username must be at least 3 characters')
+                      .max(30, 'Username cannot exceed 30 characters')
+                      .regex(
+                          /^[a-zA-Z0-9_]+$/,
+                          'Username can only contain letters, numbers, and underscores'
+                      )
                 : z.string().optional(),
         firstName:
             type === 'sign-up'
