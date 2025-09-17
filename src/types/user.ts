@@ -6,11 +6,16 @@ export const registerSchema = z.object({
     firstName: z.string().min(2, 'First name is required'),
     lastName: z.string().min(2, 'Last name is required'),
     email: z.email('Invalid email address'),
-    bio: z.string().max(160, 'Bio must be 160 characters or less').optional(),
-    avatarUrl: z.url('Invalid URL').optional(),
-    website: z.url('Invalid URL').optional(),
+})
+
+export const updateProfileSchema = z.object({
+    firstName: z.string().min(2, 'First name is required').optional(),
+    lastName: z.string().min(2, 'Last name is required').optional(),
+    bio: z.string().max(160, 'Bio must be less than 160 characters').optional(),
+    avatarUrl: z.url('Invalid URL format').optional(),
+    website: z.url('Invalid URL format').optional(),
     location: z.string().optional(),
-    role: z.enum(['USER', 'ADMIN']).default('USER').optional(),
 })
 
 export type CreateUser = z.infer<typeof registerSchema>
+export type UpdateUser = z.infer<typeof updateProfileSchema>

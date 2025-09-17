@@ -9,7 +9,7 @@ interface ResponseData {
 
 export async function registerUser(payload: CreateUser): Promise<ResponseData> {
     try {
-        const response = await apiClient.post('/user/register', payload)
+        const response = await apiClient.post('/users/register', payload)
         return { success: true, data: response.data }
     } catch (error) {
         return { success: false, error }
