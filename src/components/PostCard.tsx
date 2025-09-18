@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import Image from 'next/image'
 import { useState } from 'react'
 import { Edit, Trash } from 'lucide-react'
@@ -9,10 +10,9 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { ConfirmationModal } from '@/components/modal/ConfirmationModal'
 import { PostModal } from '@/components/modal/PostModal'
+import { PostActions } from '@/components/PostActions'
 import { deletePost } from '@/services/postService'
 import type { PostWithAuthor } from '@/types/post'
-import { PostActions } from './PostActions'
-import Link from 'next/link'
 
 interface PostCardProps {
     post: PostWithAuthor
@@ -95,6 +95,11 @@ export default function PostCard({ post, onPostDeleted, isCurrentUserPost }: Pos
                     </div>
                 </Link>
                 <div className="flex items-center gap-4">
+                    <Badge
+                        variant={getCategoryVariant(post.category)}
+                        className="text-xs capitalize">
+                        {post.category.toLowerCase()}
+                    </Badge>
                     {isCurrentUserPost ? (
                         <>
                             <ConfirmationModal
@@ -118,11 +123,6 @@ export default function PostCard({ post, onPostDeleted, isCurrentUserPost }: Pos
                             <Edit className="size-4 opacity-50 cursor-not-allowed" />
                         </>
                     )}
-                    <Badge
-                        variant={getCategoryVariant(post.category)}
-                        className="text-xs capitalize">
-                        {post.category.toLowerCase()}
-                    </Badge>
                 </div>
             </CardHeader>
             <CardContent className="grid grid-cols-5">
@@ -140,6 +140,7 @@ export default function PostCard({ post, onPostDeleted, isCurrentUserPost }: Pos
                         <Image
                             src={post.imageUrl}
                             alt="Post image"
+                            loading="lazy"
                             width={200}
                             height={200}
                             className="rounded-lg w-auto max-h-48 border object-cover"

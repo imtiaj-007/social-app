@@ -115,7 +115,13 @@ export function FormField<
                                 case 'input':
                                     return (
                                         <Input
-                                            {...field}
+                                            value={field.value || ''}
+                                            onChange={e => {
+                                                field.onChange(e.target.value)
+                                            }}
+                                            onBlur={field.onBlur}
+                                            name={field.name}
+                                            ref={field.ref}
                                             type={props.inputType || 'text'}
                                             placeholder={props.placeholder}
                                             disabled={disabled}
@@ -130,7 +136,13 @@ export function FormField<
                                     return (
                                         <div className="space-y-2">
                                             <Textarea
-                                                {...field}
+                                                value={field.value || ''}
+                                                onChange={e => {
+                                                    field.onChange(e.target.value)
+                                                }}
+                                                onBlur={field.onBlur}
+                                                name={field.name}
+                                                ref={field.ref}
                                                 placeholder={props.placeholder}
                                                 disabled={disabled}
                                                 rows={props.rows}
@@ -164,8 +176,10 @@ export function FormField<
                                 case 'select':
                                     return (
                                         <Select
-                                            value={field.value}
-                                            onValueChange={field.onChange}
+                                            value={field.value || ''}
+                                            onValueChange={value => {
+                                                field.onChange(value)
+                                            }}
                                             disabled={disabled}>
                                             <SelectTrigger
                                                 className={

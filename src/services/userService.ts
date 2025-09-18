@@ -1,4 +1,4 @@
-import { Profile } from '@/generated/prisma'
+import { Follow, Profile } from '@/generated/prisma'
 import { apiClient } from '@/lib/apiClient'
 import { CreateUser, UpdateUser } from '@/types/user'
 
@@ -10,7 +10,7 @@ interface ResponseData<T> {
 
 export async function registerUser(payload: CreateUser): Promise<ResponseData<Profile>> {
     try {
-        const response = await apiClient.post('/users/register', payload)
+        const response = await apiClient.post('/auth/register', payload)
         return response.data
     } catch (error) {
         return { success: false, error }
@@ -56,6 +56,58 @@ export async function getCurrentUser(): Promise<ResponseData<Profile>> {
 export async function updateCurrentUser(payload: UpdateUser): Promise<ResponseData<Profile>> {
     try {
         const response = await apiClient.put('/users/me', payload)
+        return response.data
+    } catch (error) {
+        return { success: false, error }
+    }
+}
+
+export async function followUser(userId: string): Promise<ResponseData<Follow>> {
+    try {
+        const response = await apiClient.post(`/users/${userId}/follow`)
+        return response.data
+    } catch (error) {
+        return { success: false, error }
+    }
+}
+
+export async function unfollowUser(userId: string): Promise<ResponseData<{ message: string }>> {
+    try {
+        const response = await apiClient.delete(`/users/${userId}/follow`)
+        return response.data
+    } catch (error) {
+        return { success: false, error }
+    }
+}
+
+export async function getUserFollowers(
+    userId: string,
+    page: number = 1,
+    limit: number = 20
+): Promise<ResponseData<Profile[]> & { totalCount?: number }> {
+    try {
+        const params = new URLSearchParams()
+        params.append('page', page.toString())
+        params.append('limit', limit.toString())
+
+        const response = await apiClient.get(`/users/${userId}/followers?${params.toString()}`)
+        return response.data
+    } catch (error) {
+        return { success: false, error }
+    }
+}
+
+export async function getUserFollowing(
+    userId: string,
+    page: number = 1,
+    limit: number = 20
+): Promise<ResponseData<Profile[]> & { totalCount?: number }> {
+    try {
+        const params = new URLSearchParams()
+        params.append('page', page.toString())
+        params.append('limit', limit.toString())
+
+        const response = await apiClient.get(`/users/${userId}/following?${params.toString()}`)
         return response.data
     } catch (error) {
         return { success: false, error }

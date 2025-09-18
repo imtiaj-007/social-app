@@ -1,9 +1,13 @@
+'use client'
+
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { HomeIcon, MessageSquareIcon, BellIcon, UserRoundIcon, Pencil } from 'lucide-react'
 import { PostModal } from '@/components/modal/PostModal'
+import { useUser } from '@/hooks/useUser'
 
 export default function AppSidebar() {
+    const { user } = useUser()
     return (
         <div className="w-56 flex flex-col justify-between border-r p-4">
             <ul className="space-y-0.5">
@@ -32,7 +36,7 @@ export default function AppSidebar() {
                         </Button>
                     }
                 />
-                <Link href="/profile">
+                <Link href={user ? `/profile/${user?.id}` : '/profile/me'}>
                     <Button
                         type="button"
                         variant="outline"
