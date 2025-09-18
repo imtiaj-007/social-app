@@ -11,6 +11,7 @@ export const registerSchema = z.object({
 export const updateProfileSchema = z.object({
     firstName: z.string().min(2, 'First name is required').optional(),
     lastName: z.string().min(2, 'Last name is required').optional(),
+    email: z.email('Invalid email address'),
     bio: z.string().max(160, 'Bio must be less than 160 characters').optional(),
     avatarUrl: z.url('Invalid URL format').optional(),
     website: z.url('Invalid URL format').optional(),
