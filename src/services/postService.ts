@@ -59,3 +59,70 @@ export async function deletePost(postId: string): Promise<ResponseData<unknown>>
         return { success: false, error }
     }
 }
+
+export async function likePost(postId: string): Promise<ResponseData<unknown>> {
+    try {
+        const response = await apiClient.post(`/posts/${postId}/like`)
+        return response.data
+    } catch (error) {
+        return { success: false, error }
+    }
+}
+
+export async function unlikePost(postId: string): Promise<ResponseData<unknown>> {
+    try {
+        const response = await apiClient.delete(`/posts/${postId}/like`)
+        return response.data
+    } catch (error) {
+        return { success: false, error }
+    }
+}
+
+export async function getLikeStatus(
+    postId: string
+): Promise<ResponseData<{ liked: boolean; likeCount: number }>> {
+    try {
+        const response = await apiClient.get(`/posts/${postId}/like-status`)
+        return response.data
+    } catch (error) {
+        return { success: false, error }
+    }
+}
+
+export async function createComment(
+    postId: string,
+    content: string
+): Promise<ResponseData<unknown>> {
+    try {
+        const response = await apiClient.post(`/posts/${postId}/comments`, { content })
+        return response.data
+    } catch (error) {
+        return { success: false, error }
+    }
+}
+
+export async function getComments(
+    postId: string,
+    page: number = 1,
+    limit: number = 20
+): Promise<ResponseData<unknown>> {
+    try {
+        const params = new URLSearchParams()
+        params.append('page', page.toString())
+        params.append('limit', limit.toString())
+
+        const response = await apiClient.get(`/posts/${postId}/comments?${params.toString()}`)
+        return response.data
+    } catch (error) {
+        return { success: false, error }
+    }
+}
+
+export async function deleteComment(commentId: string): Promise<ResponseData<unknown>> {
+    try {
+        const response = await apiClient.delete(`/comments/${commentId}`)
+        return response.data
+    } catch (error) {
+        return { success: false, error }
+    }
+}

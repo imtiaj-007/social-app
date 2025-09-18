@@ -11,6 +11,8 @@ import { ConfirmationModal } from '@/components/modal/ConfirmationModal'
 import { PostModal } from '@/components/modal/PostModal'
 import { deletePost } from '@/services/postService'
 import type { PostWithAuthor } from '@/types/post'
+import { PostActions } from './PostActions'
+import Link from 'next/link'
 
 interface PostCardProps {
     post: PostWithAuthor
@@ -35,7 +37,7 @@ export default function PostCard({ post, onPostDeleted, isCurrentUserPost }: Pos
     const getCategoryVariant = (category: string) => {
         switch (category) {
             case 'ANNOUNCEMENT':
-                return 'destructive'
+                return 'success'
             case 'QUESTION':
                 return 'secondary'
             default:
@@ -64,65 +66,75 @@ export default function PostCard({ post, onPostDeleted, isCurrentUserPost }: Pos
 
     return (
         <Card className="w-full">
-            <CardHeader className="flex flex-row items-center space-y-0 px-4">
-                <Avatar className="h-8 w-8 mr-3">
-                    {post.author?.avatarUrl ? (
-                        <AvatarImage
-                            src={post.author.avatarUrl}
-                            alt={post.author.username || 'User'}
-                        />
-                    ) : null}
-                    <AvatarFallback>
-                        {getInitials(
-                            post.author?.firstName,
-                            post.author?.lastName,
-                            post.author?.username
-                        )}
-                    </AvatarFallback>
-                </Avatar>
-                <div className="flex-1">
-                    <div className="flex items-center justify-between gap-2">
+            <CardHeader className="flex items-center justify-between px-4">
+                <Link
+                    href={`/profile/${post.authorId}`}
+                    className="flex items-center gap-0.5 cursor-pointer">
+                    <Avatar className="h-8 w-8 mr-3">
+                        {post.author?.avatarUrl ? (
+                            <AvatarImage
+                                src={post.author.avatarUrl}
+                                alt={post.author.username || 'User'}
+                            />
+                        ) : null}
+                        <AvatarFallback>
+                            {getInitials(
+                                post.author?.firstName,
+                                post.author?.lastName,
+                                post.author?.username
+                            )}
+                        </AvatarFallback>
+                    </Avatar>
+                    <div className="space-y-0.5">
                         <h3 className="text-sm font-semibold">
                             {`${post.author?.firstName} ${post.author?.lastName}`}
                         </h3>
-                        <div className="flex items-center gap-4">
-                            {isCurrentUserPost ? (
-                                <>
-                                    <ConfirmationModal
-                                        trigger={<Trash className="size-4 cursor-pointer" />}
-                                        title="Delete Post"
-                                        description="Are you sure you want to delete this post? This action cannot be undone."
-                                        confirmText="Delete"
-                                        variant="destructive"
-                                        onConfirm={handleDeletePost}
-                                        isLoading={loading}
-                                    />
-                                    <PostModal
-                                        trigger={<Edit className="size-4 cursor-pointer" />}
-                                        postId={post.id}
-                                        isUpdate={true}
-                                    />
-                                </>
-                            ) : (
-                                <>
-                                    <Trash className="size-4 opacity-50 cursor-not-allowed" />
-                                    <Edit className="size-4 opacity-50 cursor-not-allowed" />
-                                </>
-                            )}
-                            <Badge
-                                variant={getCategoryVariant(post.category)}
-                                className="text-xs">
-                                {post.category.toLowerCase()}
-                            </Badge>
-                        </div>
+                        <p className="text-xs text-muted-foreground">
+                            {formatDistanceToNow(new Date(post.createdAt), { addSuffix: true })}
+                        </p>
                     </div>
-                    <p className="text-xs text-muted-foreground">
-                        {formatDistanceToNow(new Date(post.createdAt), { addSuffix: true })}
-                    </p>
+                </Link>
+                <div className="flex items-center gap-4">
+                    {isCurrentUserPost ? (
+                        <>
+                            <ConfirmationModal
+                                trigger={<Trash className="size-4 cursor-pointer" />}
+                                title="Delete Post"
+                                description="Are you sure you want to delete this post? This action cannot be undone."
+                                confirmText="Delete"
+                                variant="destructive"
+                                onConfirm={handleDeletePost}
+                                isLoading={loading}
+                            />
+                            <PostModal
+                                trigger={<Edit className="size-4 cursor-pointer" />}
+                                postId={post.id}
+                                isUpdate={true}
+                            />
+                        </>
+                    ) : (
+                        <>
+                            <Trash className="size-4 opacity-50 cursor-not-allowed" />
+                            <Edit className="size-4 opacity-50 cursor-not-allowed" />
+                        </>
+                    )}
+                    <Badge
+                        variant={getCategoryVariant(post.category)}
+                        className="text-xs capitalize">
+                        {post.category.toLowerCase()}
+                    </Badge>
                 </div>
             </CardHeader>
             <CardContent className="grid grid-cols-5">
-                <p className="col-span-3 text-sm leading-relaxed">{post.content}</p>
+                <div className="col-span-3 flex flex-col justify-between">
+                    <p className="text-sm leading-relaxed">{post.content}</p>
+                    <PostActions
+                        postId={post.id}
+                        initialLiked={false}
+                        initialLikeCount={post.likeCount}
+                        initialCommentCount={post.commentCount}
+                    />
+                </div>
                 {post.imageUrl && (
                     <div className="col-span-2 flex items-center justify-center">
                         <Image

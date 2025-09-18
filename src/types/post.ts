@@ -10,7 +10,12 @@ export const createPostSchema = z.object({
     imageUrl: z.string().optional().or(z.literal('')),
 })
 
+export const createCommentSchema = z.object({
+    content: z.string().min(1).max(280),
+})
+
 export type CreatePost = z.infer<typeof createPostSchema>
+export type CreateComment = z.infer<typeof createCommentSchema>
 
 export type PostWithAuthor = Prisma.PostGetPayload<{
     include: { author: true }
