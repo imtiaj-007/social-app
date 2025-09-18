@@ -9,9 +9,5 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         redirect('/auth/sign-in')
     }
 
-    return (
-        <div className="flex mx-auto max-w-7xl flex-col gap-12 my-12 px-16 max-sm:px-4 max-sm:my-8">
-            {children}
-        </div>
-    )
+    return <div className="flex mx-auto max-w-7xl h-screen flex-col gap-12">{children}</div>
 }
