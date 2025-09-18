@@ -1,22 +1,24 @@
 import Image from 'next/image'
 import { useState } from 'react'
 import { Edit, Trash } from 'lucide-react'
+import { formatDistanceToNow } from 'date-fns'
+
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { ConfirmationModal } from '@/components/modal/ConfirmationModal'
 import { PostModal } from '@/components/modal/PostModal'
-import { formatDistanceToNow } from 'date-fns'
 import { deletePost } from '@/services/postService'
 import type { PostWithAuthor } from '@/types/post'
 
 interface PostCardProps {
     post: PostWithAuthor
     onPostDeleted?: () => void
+    isCurrentUserPost: boolean
 }
 
-export default function PostCard({ post, onPostDeleted }: PostCardProps) {
+export default function PostCard({ post, onPostDeleted, isCurrentUserPost }: PostCardProps) {
     const [loading, setLoading] = useState<boolean>(false)
 
     const getInitials = (
@@ -84,20 +86,29 @@ export default function PostCard({ post, onPostDeleted }: PostCardProps) {
                             {`${post.author?.firstName} ${post.author?.lastName}`}
                         </h3>
                         <div className="flex items-center gap-4">
-                            <ConfirmationModal
-                                trigger={<Trash className="size-4 cursor-pointer" />}
-                                title="Delete Post"
-                                description="Are you sure you want to delete this post? This action cannot be undone."
-                                confirmText="Delete"
-                                variant="destructive"
-                                onConfirm={handleDeletePost}
-                                isLoading={loading}
-                            />
-                            <PostModal
-                                trigger={<Edit className="size-4 cursor-pointer" />}
-                                postId={post.id}
-                                isUpdate={true}
-                            />
+                            {isCurrentUserPost ? (
+                                <>
+                                    <ConfirmationModal
+                                        trigger={<Trash className="size-4 cursor-pointer" />}
+                                        title="Delete Post"
+                                        description="Are you sure you want to delete this post? This action cannot be undone."
+                                        confirmText="Delete"
+                                        variant="destructive"
+                                        onConfirm={handleDeletePost}
+                                        isLoading={loading}
+                                    />
+                                    <PostModal
+                                        trigger={<Edit className="size-4 cursor-pointer" />}
+                                        postId={post.id}
+                                        isUpdate={true}
+                                    />
+                                </>
+                            ) : (
+                                <>
+                                    <Trash className="size-4 opacity-50 cursor-not-allowed" />
+                                    <Edit className="size-4 opacity-50 cursor-not-allowed" />
+                                </>
+                            )}
                             <Badge
                                 variant={getCategoryVariant(post.category)}
                                 className="text-xs">

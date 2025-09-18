@@ -1,8 +1,9 @@
 'use client'
 
-import { PostWithAuthor } from '@/types/post'
 import { useEffect, useRef, useState } from 'react'
 import PostCard from '@/components/PostCard'
+import { useUser } from '@/hooks/useUser'
+import { PostWithAuthor } from '@/types/post'
 
 export default function PostsFeed({
     initialItems,
@@ -16,6 +17,7 @@ export default function PostsFeed({
     const [loading, setLoading] = useState(false)
     const [done, setDone] = useState(!initialCursor)
     const sentinelRef = useRef<HTMLDivElement | null>(null)
+    const { user } = useUser()
 
     const handlePostDeleted = () => {
         // Refresh the feed by resetting to initial state and fetching from beginning
@@ -58,6 +60,7 @@ export default function PostsFeed({
                     key={post.id}
                     post={post}
                     onPostDeleted={handlePostDeleted}
+                    isCurrentUserPost={user?.id === post.author?.id}
                 />
             ))}
             {!done && (

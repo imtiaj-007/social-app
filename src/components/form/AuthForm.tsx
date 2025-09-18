@@ -13,6 +13,7 @@ import { login, signup } from '@/lib/actions/auth.action'
 import { registerUser } from '@/services/userService'
 import { CreateUser } from '@/types/user'
 import { useRouter } from 'next/navigation'
+import { useUser } from '@/hooks/useUser'
 
 type FormType = 'sign-in' | 'sign-up'
 
@@ -58,6 +59,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
             lastName: '',
         },
     })
+    const { fetchAndSetCurrentUser } = useUser()
 
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
         try {
@@ -91,10 +93,11 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
                 router.push('/auth/sign-in')
             } else {
                 await login(formData)
+                fetchAndSetCurrentUser()
                 toast.success('Welcome back!', {
                     description: 'You have successfully signed in to your account.',
                 })
-                router.push('/')
+                router.push('/feed')
             }
         } catch (error) {
             toast.error('Authentication error', {
@@ -125,21 +128,21 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
                                     name="firstName"
                                     label="First Name"
                                     placeholder="Your First Name"
-                                    type="text"
+                                    type="input"
                                 />
                                 <FormField
                                     control={form.control}
                                     name="lastName"
                                     label="Last Name"
                                     placeholder="Your Last Name"
-                                    type="text"
+                                    type="input"
                                 />
                                 <FormField
                                     control={form.control}
                                     name="username"
                                     label="Username"
                                     placeholder="Your Username"
-                                    type="text"
+                                    type="input"
                                 />
                             </>
                         )}
@@ -149,7 +152,8 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
                             name="email"
                             label="Email"
                             placeholder="Your email address"
-                            type="email"
+                            type="input"
+                            inputType="email"
                         />
 
                         <FormField
@@ -157,7 +161,8 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
                             name="password"
                             label="Password"
                             placeholder="Enter your password"
-                            type="password"
+                            type="input"
+                            inputType="password"
                         />
 
                         <Button

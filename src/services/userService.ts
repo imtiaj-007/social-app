@@ -1,13 +1,14 @@
+import { Profile } from '@/generated/prisma'
 import { apiClient } from '@/lib/apiClient'
 import { CreateUser, UpdateUser } from '@/types/user'
 
-interface ResponseData {
+interface ResponseData<T> {
     success: boolean
-    data?: unknown
+    data?: T | unknown
     error?: unknown
 }
 
-export async function registerUser(payload: CreateUser): Promise<ResponseData> {
+export async function registerUser(payload: CreateUser): Promise<ResponseData<Profile>> {
     try {
         const response = await apiClient.post('/users/register', payload)
         return response.data
@@ -20,7 +21,7 @@ export async function getUsers(
     search?: string,
     page: number = 1,
     limit: number = 20
-): Promise<ResponseData> {
+): Promise<ResponseData<Profile[]>> {
     try {
         const params = new URLSearchParams()
         if (search) params.append('search', search)
@@ -34,7 +35,7 @@ export async function getUsers(
     }
 }
 
-export async function getUserById(userId: string): Promise<ResponseData> {
+export async function getUserById(userId: string): Promise<ResponseData<Profile>> {
     try {
         const response = await apiClient.get(`/users/${userId}`)
         return response.data
@@ -43,7 +44,7 @@ export async function getUserById(userId: string): Promise<ResponseData> {
     }
 }
 
-export async function getCurrentUser(): Promise<ResponseData> {
+export async function getCurrentUser(): Promise<ResponseData<Profile>> {
     try {
         const response = await apiClient.get('/users/me')
         return response.data
@@ -52,7 +53,7 @@ export async function getCurrentUser(): Promise<ResponseData> {
     }
 }
 
-export async function updateCurrentUser(payload: UpdateUser): Promise<ResponseData> {
+export async function updateCurrentUser(payload: UpdateUser): Promise<ResponseData<Profile>> {
     try {
         const response = await apiClient.put('/users/me', payload)
         return response.data
