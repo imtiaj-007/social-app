@@ -121,8 +121,8 @@ export const ProfileForm = () => {
     }
 
     return (
-        <>
-            <Link href="/">
+        <div className="p-4 md:p-8 lg:p-16">
+            <Link href="/feed">
                 <Button
                     type="button"
                     variant="outline">
@@ -173,6 +173,7 @@ export const ProfileForm = () => {
                                     control={form.control}
                                     name="firstName"
                                     label="First Name"
+                                    type="input"
                                     placeholder="Enter your first name"
                                     disabled
                                 />
@@ -180,6 +181,7 @@ export const ProfileForm = () => {
                                     control={form.control}
                                     name="lastName"
                                     label="Last Name"
+                                    type="input"
                                     placeholder="Enter your last name"
                                     disabled
                                 />
@@ -189,7 +191,8 @@ export const ProfileForm = () => {
                                 control={form.control}
                                 name="email"
                                 label="Email"
-                                type="email"
+                                type="input"
+                                inputType="email"
                                 placeholder="Enter your email"
                                 disabled
                             />
@@ -198,6 +201,7 @@ export const ProfileForm = () => {
                                 control={form.control}
                                 name="bio"
                                 label="Bio"
+                                type="textarea"
                                 placeholder="Tell us about yourself"
                             />
 
@@ -205,6 +209,7 @@ export const ProfileForm = () => {
                                 control={form.control}
                                 name="website"
                                 label="Website"
+                                type="input"
                                 placeholder="https://yourwebsite.com"
                             />
 
@@ -212,6 +217,7 @@ export const ProfileForm = () => {
                                 control={form.control}
                                 name="location"
                                 label="Location"
+                                type="input"
                                 placeholder="Enter your location"
                             />
 
@@ -225,6 +231,6 @@ export const ProfileForm = () => {
                     </Form>
                 </div>
             </div>
-        </>
+        </div>
     )
 }
