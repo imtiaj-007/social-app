@@ -1,10 +1,10 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
 import { z } from 'zod'
 import { createPostSchema } from '@/types/post'
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
     try {
         const supabase = await createClient()
         const {

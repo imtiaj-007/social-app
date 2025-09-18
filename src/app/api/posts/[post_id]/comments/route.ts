@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma'
 import { z } from 'zod'
 import { createCommentSchema } from '@/types/post'
 
-export async function POST(request: Request, { params }: { params: { post_id: string } }) {
+export async function POST(request: Request, { params }: { params: Promise<{ post_id: string }> }) {
     try {
         const supabase = await createClient()
         const {
@@ -16,7 +16,7 @@ export async function POST(request: Request, { params }: { params: { post_id: st
             return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 })
         }
 
-        const postId = params.post_id
+        const { post_id: postId } = await params
         const body = await request.json()
         const validatedData = createCommentSchema.parse(body)
 
@@ -72,9 +72,9 @@ export async function POST(request: Request, { params }: { params: { post_id: st
     }
 }
 
-export async function GET(request: Request, { params }: { params: { post_id: string } }) {
+export async function GET(request: Request, { params }: { params: Promise<{ post_id: string }> }) {
     try {
-        const postId = params.post_id
+        const { post_id: postId } = await params
 
         // Check if post exists
         const post = await prisma.post.findUnique({

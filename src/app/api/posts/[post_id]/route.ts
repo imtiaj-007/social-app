@@ -4,9 +4,9 @@ import { prisma } from '@/lib/prisma'
 import { z } from 'zod'
 import { createPostSchema } from '@/types/post'
 
-export async function GET(request: Request, { params }: { params: { post_id: string } }) {
+export async function GET(request: Request, { params }: { params: Promise<{ post_id: string }> }) {
     try {
-        const { post_id } = params
+        const { post_id } = await params
 
         const post = await prisma.post.findUnique({
             where: { id: post_id, isActive: true },
@@ -36,7 +36,7 @@ export async function GET(request: Request, { params }: { params: { post_id: str
     }
 }
 
-export async function PUT(request: Request, { params }: { params: { post_id: string } }) {
+export async function PUT(request: Request, { params }: { params: Promise<{ post_id: string }> }) {
     try {
         const supabase = await createClient()
         const {
@@ -48,7 +48,7 @@ export async function PUT(request: Request, { params }: { params: { post_id: str
             return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 })
         }
 
-        const { post_id } = params
+        const { post_id } = await params
         const body = await request.json()
         const validatedData = createPostSchema.parse(body)
 
@@ -104,7 +104,10 @@ export async function PUT(request: Request, { params }: { params: { post_id: str
     }
 }
 
-export async function DELETE(request: Request, { params }: { params: { post_id: string } }) {
+export async function DELETE(
+    request: Request,
+    { params }: { params: Promise<{ post_id: string }> }
+) {
     try {
         const supabase = await createClient()
         const {
@@ -116,7 +119,7 @@ export async function DELETE(request: Request, { params }: { params: { post_id: 
             return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 })
         }
 
-        const { post_id } = params
+        const { post_id } = await params
 
         // Check if post exists and belongs to user
         const existingPost = await prisma.post.findUnique({

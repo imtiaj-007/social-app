@@ -1,12 +1,12 @@
 'use client'
 
+import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
-import Link from 'next/link'
-import Image from 'next/image'
 import { Form } from '@/components/ui/form'
 import { Button } from '@/components/ui/button'
 import { FormField } from '@/components/form/FormField'
@@ -17,6 +17,7 @@ import { updateProfileSchema, type UpdateUser } from '@/types/user'
 import type { Profile } from '@/generated/prisma'
 
 export const ProfileForm = () => {
+    const router = useRouter()
     const [isLoading, setIsLoading] = useState(false)
     const [isUploading, setIsUploading] = useState(false)
     const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
@@ -37,7 +38,7 @@ export const ProfileForm = () => {
 
     // Use react-hook-form's built-in dirty state tracking
     const {
-        formState: { isDirty, isValid },
+        formState: { isDirty },
     } = form
 
     useEffect(() => {
@@ -122,45 +123,42 @@ export const ProfileForm = () => {
 
     return (
         <div className="p-4 md:p-8 lg:p-16">
-            <Link href="/feed">
-                <Button
-                    type="button"
-                    variant="outline">
-                    <ChevronLeft />
-                    Go Back
-                </Button>
-            </Link>
+            <Button
+                type="button"
+                variant="outline"
+                onClick={() => router.back()}>
+                <ChevronLeft />
+                Go Back
+            </Button>
 
             <div className="max-w-4xl mx-auto p-6 grid grid-cols-6 gap-6">
                 <div className="col-span-2">
-                    {avatarPreview && (
-                        <div className="flex flex-col items-center space-y-4">
-                            <div className="flex-shrink-0">
-                                <Image
-                                    src={avatarPreview}
-                                    alt="Current avatar"
-                                    width={300}
-                                    height={300}
-                                    className="w-64 h-64 rounded-full object-cover"
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                                    Upload New Avatar
-                                </label>
-                                <input
-                                    type="file"
-                                    accept="image/jpeg, image/png"
-                                    onChange={handleAvatarUpload}
-                                    disabled={isUploading}
-                                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                                />
-                                {isUploading && (
-                                    <p className="text-sm text-muted-foreground">Uploading...</p>
-                                )}
-                            </div>
+                    <div className="flex flex-col items-center space-y-4">
+                        <div className="flex-shrink-0">
+                            <Image
+                                src={avatarPreview || 'https://github.com/evilrabbit.png'}
+                                alt="Current avatar"
+                                width={300}
+                                height={300}
+                                className="w-64 h-64 rounded-full object-cover"
+                            />
                         </div>
-                    )}
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                                Upload New Avatar
+                            </label>
+                            <input
+                                type="file"
+                                accept="image/jpeg, image/png"
+                                onChange={handleAvatarUpload}
+                                disabled={isUploading}
+                                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                            />
+                            {isUploading && (
+                                <p className="text-sm text-muted-foreground">Uploading...</p>
+                            )}
+                        </div>
+                    </div>
                 </div>
                 <div className="col-span-4">
                     <h1 className="text-3xl font-bold mb-8">Profile</h1>
@@ -224,7 +222,7 @@ export const ProfileForm = () => {
                             <Button
                                 type="submit"
                                 className="w-full"
-                                disabled={!isDirty || !isValid || isLoading}>
+                                disabled={!isDirty || isLoading}>
                                 {isLoading ? 'Updating...' : 'Update Profile'}
                             </Button>
                         </form>

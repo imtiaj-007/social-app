@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
 
-export async function POST(request: Request, { params }: { params: { post_id: string } }) {
+export async function POST(request: Request, { params }: { params: Promise<{ post_id: string }> }) {
     try {
         const supabase = await createClient()
         const {
@@ -14,7 +14,7 @@ export async function POST(request: Request, { params }: { params: { post_id: st
             return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 })
         }
 
-        const postId = params.post_id
+        const { post_id: postId } = await params
         const userId = user.id
 
         // Check if post exists
@@ -68,7 +68,10 @@ export async function POST(request: Request, { params }: { params: { post_id: st
     }
 }
 
-export async function DELETE(request: Request, { params }: { params: { post_id: string } }) {
+export async function DELETE(
+    request: Request,
+    { params }: { params: Promise<{ post_id: string }> }
+) {
     try {
         const supabase = await createClient()
         const {
@@ -80,7 +83,7 @@ export async function DELETE(request: Request, { params }: { params: { post_id: 
             return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 })
         }
 
-        const postId = params.post_id
+        const { post_id: postId } = await params
         const userId = user.id
 
         // Check if post exists

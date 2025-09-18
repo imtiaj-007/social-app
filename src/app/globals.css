@@ -133,6 +133,32 @@
     --color-sidebar-ring: var(--sidebar-ring);
 }
 
+/* Custom scrollbar styles */
+*::-webkit-scrollbar {
+    width: 3px;
+}
+
+*::-webkit-scrollbar-track {
+    background: var(--sidebar);
+    border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb {
+    background: var(--sidebar-accent);
+    border-radius: 4px;
+    border: 2px solid var(--sidebar);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    background: var(--sidebar-primary);
+}
+
+/* Firefox scrollbar */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--sidebar-accent) var(--sidebar);
+}
+
 @layer base {
     * {
         @apply border-border outline-ring/50;

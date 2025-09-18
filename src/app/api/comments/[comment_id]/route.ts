@@ -2,7 +2,10 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
 
-export async function DELETE(request: Request, { params }: { params: { comment_id: string } }) {
+export async function DELETE(
+    request: Request,
+    { params }: { params: Promise<{ comment_id: string }> }
+) {
     try {
         const supabase = await createClient()
         const {
@@ -14,7 +17,7 @@ export async function DELETE(request: Request, { params }: { params: { comment_i
             return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 })
         }
 
-        const commentId = params.comment_id
+        const { comment_id: commentId } = await params
 
         // Check if comment exists and belongs to user
         const existingComment = await prisma.comment.findUnique({
