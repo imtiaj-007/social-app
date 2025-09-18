@@ -24,7 +24,7 @@ export default function RootLayout({
             className="dark">
             <body className={`${nunito.className} antialiased pattern`}>
                 {children}
-                <Toaster />
+                <Toaster richColors />
             </body>
         </html>
     )

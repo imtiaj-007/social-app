@@ -4,16 +4,16 @@ import { createClient } from '@/lib/supabase/server'
 
 export async function saveImageToStorage(
     file: File,
-    bucketName: string = 'images',
-    path?: string
+    folder: string = 'profile',
+    bucketName: string = 'images'
 ): Promise<{ success: boolean; data?: { path: string; url: string }; error?: string }> {
     try {
         const supabase = await createClient()
 
         // Generate a unique filename if no path is provided
-        const fileName = path || `${Date.now()}-${Math.random().toString(36).substring(2, 15)}`
+        const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}`
         const fileExtension = file.name.split('.').pop()
-        const fullPath = `${fileName}.${fileExtension}`
+        const fullPath = `${folder}/${fileName}.${fileExtension}`
 
         const { data, error } = await supabase.storage.from(bucketName).upload(fullPath, file, {
             cacheControl: '3600',
