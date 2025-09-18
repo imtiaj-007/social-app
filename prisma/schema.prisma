@@ -31,27 +31,29 @@ enum NotificationType {
   COMMENT
 }
 
-model User {
-  id            String         @id @default(uuid())
-  email         String         @unique
-  username      String         @unique
-  password      String
-  firstName     String
-  lastName      String
-  bio           String?        @db.VarChar(160)
-  avatarUrl     String?
-  website       String?
-  location      String?
-  role          Role           @default(USER)
+// Profile extends Supabase auth.users
+model Profile {
+  id        String  @id
+  username  String  @unique
+  email     String  @unique
+  firstName String
+  lastName  String
+  bio       String? @db.VarChar(160)
+  avatarUrl String?
+  website   String?
+  location  String?
+  role      Role    @default(USER)
+
   posts         Post[]
   followers     Follow[]       @relation("followers")
   following     Follow[]       @relation("following")
   comments      Comment[]
   notifications Notification[] @relation("recipientNotifs")
   sentNotifs    Notification[] @relation("senderNotifs")
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  Like          Like[]
+  likes         Like[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Post {
@@ -59,7 +61,7 @@ model Post {
   content      String         @db.VarChar(280)
   imageUrl     String?
   category     PostCategory   @default(GENERAL)
-  author       User           @relation(fields: [authorId], references: [id])
+  author       Profile        @relation(fields: [authorId], references: [id])
   authorId     String
   isActive     Boolean        @default(true)
   likeCount    Int            @default(0)
@@ -73,9 +75,9 @@ model Post {
 
 model Follow {
   id          String   @id @default(uuid())
-  follower    User     @relation("following", fields: [followerId], references: [id])
+  follower    Profile  @relation("following", fields: [followerId], references: [id])
   followerId  String
-  following   User     @relation("followers", fields: [followingId], references: [id])
+  following   Profile  @relation("followers", fields: [followingId], references: [id])
   followingId String
   createdAt   DateTime @default(now())
 
@@ -86,7 +88,7 @@ model Like {
   id        String   @id @default(uuid())
   post      Post     @relation(fields: [postId], references: [id])
   postId    String
-  user      User     @relation(fields: [userId], references: [id])
+  user      Profile  @relation(fields: [userId], references: [id])
   userId    String
   createdAt DateTime @default(now())
 
@@ -98,7 +100,7 @@ model Comment {
   content   String   @db.VarChar(200)
   post      Post     @relation(fields: [postId], references: [id])
   postId    String
-  author    User     @relation(fields: [authorId], references: [id])
+  author    Profile  @relation(fields: [authorId], references: [id])
   authorId  String
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
@@ -106,9 +108,9 @@ model Comment {
 
 model Notification {
   id               String           @id @default(uuid())
-  recipient        User             @relation("recipientNotifs", fields: [recipientId], references: [id])
+  recipient        Profile          @relation("recipientNotifs", fields: [recipientId], references: [id])
   recipientId      String
-  sender           User             @relation("senderNotifs", fields: [senderId], references: [id])
+  sender           Profile          @relation("senderNotifs", fields: [senderId], references: [id])
   senderId         String
   notificationType NotificationType
   post             Post?            @relation(fields: [postId], references: [id])

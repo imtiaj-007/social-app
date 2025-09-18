@@ -96,7 +96,7 @@ export type Database = {
                         foreignKeyName: 'Comment_authorId_fkey'
                         columns: ['authorId']
                         isOneToOne: false
-                        referencedRelation: 'User'
+                        referencedRelation: 'Profile'
                         referencedColumns: ['id']
                     },
                     {
@@ -132,14 +132,14 @@ export type Database = {
                         foreignKeyName: 'Follow_followerId_fkey'
                         columns: ['followerId']
                         isOneToOne: false
-                        referencedRelation: 'User'
+                        referencedRelation: 'Profile'
                         referencedColumns: ['id']
                     },
                     {
                         foreignKeyName: 'Follow_followingId_fkey'
                         columns: ['followingId']
                         isOneToOne: false
-                        referencedRelation: 'User'
+                        referencedRelation: 'Profile'
                         referencedColumns: ['id']
                     },
                 ]
@@ -175,7 +175,7 @@ export type Database = {
                         foreignKeyName: 'Like_userId_fkey'
                         columns: ['userId']
                         isOneToOne: false
-                        referencedRelation: 'User'
+                        referencedRelation: 'Profile'
                         referencedColumns: ['id']
                     },
                 ]
@@ -223,14 +223,14 @@ export type Database = {
                         foreignKeyName: 'Notification_recipientId_fkey'
                         columns: ['recipientId']
                         isOneToOne: false
-                        referencedRelation: 'User'
+                        referencedRelation: 'Profile'
                         referencedColumns: ['id']
                     },
                     {
                         foreignKeyName: 'Notification_senderId_fkey'
                         columns: ['senderId']
                         isOneToOne: false
-                        referencedRelation: 'User'
+                        referencedRelation: 'Profile'
                         referencedColumns: ['id']
                     },
                 ]
@@ -277,22 +277,20 @@ export type Database = {
                         foreignKeyName: 'Post_authorId_fkey'
                         columns: ['authorId']
                         isOneToOne: false
-                        referencedRelation: 'User'
+                        referencedRelation: 'Profile'
                         referencedColumns: ['id']
                     },
                 ]
             }
-            User: {
+            Profile: {
                 Row: {
                     avatarUrl: string | null
                     bio: string | null
                     createdAt: string
-                    email: string
                     firstName: string
                     id: string
                     lastName: string
                     location: string | null
-                    password: string
                     role: Database['public']['Enums']['Role']
                     updatedAt: string
                     username: string
@@ -302,12 +300,10 @@ export type Database = {
                     avatarUrl?: string | null
                     bio?: string | null
                     createdAt?: string
-                    email: string
                     firstName: string
                     id: string
                     lastName: string
                     location?: string | null
-                    password: string
                     role?: Database['public']['Enums']['Role']
                     updatedAt: string
                     username: string
@@ -317,12 +313,10 @@ export type Database = {
                     avatarUrl?: string | null
                     bio?: string | null
                     createdAt?: string
-                    email?: string
                     firstName?: string
                     id?: string
                     lastName?: string
                     location?: string | null
-                    password?: string
                     role?: Database['public']['Enums']['Role']
                     updatedAt?: string
                     username?: string
