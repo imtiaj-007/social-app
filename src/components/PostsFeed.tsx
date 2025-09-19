@@ -61,6 +61,7 @@ export default function PostsFeed({
                     post={post}
                     onPostDeleted={handlePostDeleted}
                     isCurrentUserPost={user?.id === post.author?.id}
+                    isAdmin={user?.role === 'ADMIN'}
                 />
             ))}
             {!done && (
@@ -70,7 +71,7 @@ export default function PostsFeed({
                 />
             )}
             {loading && <p className="text-sm text-muted-foreground">Loading…</p>}
-            {done && items.length === 0 && <p>No posts yet.</p>}
+            {done && items.length === 0 && <p className="text-center">No posts yet.</p>}
         </div>
     )
 }

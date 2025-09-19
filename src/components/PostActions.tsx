@@ -1,10 +1,10 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { CommentModal } from '@/components/modal/CommentModal'
-import { getLikeStatus, likePost, unlikePost } from '@/services/postService'
+import { likePost, unlikePost } from '@/services/postService'
 import { MessageCircle, Share2, ThumbsUp } from 'lucide-react'
 import { useUser } from '@/hooks/useUser'
 import { usePosts } from '@/hooks/usePosts'
@@ -27,7 +27,7 @@ export function PostActions({
     shareUrl,
 }: PostActionsProps) {
     const { isAuthenticated } = useUser()
-    const { getPostLikeStatus, updatePostLikeStatus } = usePosts()
+    const { updatePostLikeStatus } = usePosts()
     const [liked, setLiked] = useState<boolean>(initialLiked)
     const [likeCount, setLikeCount] = useState<number>(initialLikeCount)
     const [commentCount, setCommentCount] = useState<number>(initialCommentCount)
@@ -87,28 +87,6 @@ export function PostActions({
             toast.error('Could not share')
         }
     }
-
-    const checkLikedStatus = async () => {
-        const liked = getPostLikeStatus(postId)
-        if (liked) {
-            setLiked(true)
-            return
-        }
-        try {
-            const { data } = await getLikeStatus(postId)
-            if (data) {
-                setLiked(data.liked)
-                setLikeCount(data.likeCount)
-                updatePostLikeStatus(postId, data.liked, data.likeCount)
-            }
-        } catch (error) {
-            toast.error('Failed to get likes info')
-        }
-    }
-
-    useEffect(() => {
-        checkLikedStatus()
-    }, [])
 
     return (
         <div className="flex items-center gap-3 pt-2">

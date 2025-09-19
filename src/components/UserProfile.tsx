@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { followUser, unfollowUser } from '@/services/userService'
+import UserList from '@/components/UserList'
 import {
     Calendar,
     MapPin,
@@ -18,10 +18,12 @@ import {
     UserCheck,
     Edit,
     ChevronLeft,
+    Shield,
 } from 'lucide-react'
 import type { Profile } from '@/generated/prisma'
+import { followUser, unfollowUser } from '@/services/userService'
 import { useUser } from '@/hooks/useUser'
-import UserList from './UserList'
+import { cn } from '@/lib/utils'
 
 interface UserProfileProps {
     user: Profile
@@ -97,12 +99,24 @@ export default function UserProfile({
                 <Card className="my-8">
                     <CardContent className="p-6">
                         <div className="flex flex-col md:flex-row items-center gap-6">
-                            <Avatar className="h-24 w-24">
-                                <AvatarImage src={user.avatarUrl || ''} />
-                                <AvatarFallback className="text-2xl">
-                                    {getInitials(user.firstName || '', user.lastName || '')}
-                                </AvatarFallback>
-                            </Avatar>
+                            <div className="flex flex-col items-center gap-2">
+                                <Avatar
+                                    className={cn(
+                                        'w-24 h-24 relative',
+                                        user.role === 'ADMIN' ? 'border-4 border-emerald-400' : ''
+                                    )}>
+                                    <AvatarImage src={user.avatarUrl || ''} />
+                                    <AvatarFallback className="text-2xl">
+                                        {getInitials(user.firstName || '', user.lastName || '')}
+                                    </AvatarFallback>
+                                </Avatar>
+                                {user.role === 'ADMIN' && (
+                                    <Badge>
+                                        <Shield className="size-5" />
+                                        Admin
+                                    </Badge>
+                                )}
+                            </div>
 
                             <div className="flex-1 text-center md:text-left">
                                 <div className="flex items-center justify-center md:justify-start gap-4 mb-2">
