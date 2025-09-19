@@ -54,8 +54,13 @@ export async function POST(request: NextRequest) {
     }
 }
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
     try {
+        const supabase = await createClient()
+        const {
+            data: { user },
+        } = await supabase.auth.getUser()
+
         const { searchParams } = new URL(request.url)
         const limit = parseInt(searchParams.get('limit') || '20')
         const cursor = searchParams.get('cursor')
@@ -67,27 +72,37 @@ export async function GET(request: Request) {
             take: validatedLimit + 1,
             ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
             orderBy: { createdAt: 'desc' },
-            include: {
-                author: {
-                    select: {
-                        id: true,
-                        username: true,
-                        firstName: true,
-                        lastName: true,
-                        avatarUrl: true,
-                    },
-                },
-            },
+            include: { author: true },
         })
 
-        const hasMore = posts.length > limit
-        const data = hasMore ? posts.slice(0, -1) : posts
+        // Check if current user has liked each post
+        let userLikes = new Set()
+        if (user) {
+            const postIds = posts.map(post => post.id)
+            const likes = await prisma.like.findMany({
+                where: {
+                    userId: user.id,
+                    postId: { in: postIds },
+                },
+                select: { postId: true },
+            })
+            userLikes = new Set(likes.map(like => like.postId))
+        }
+
+        // Process posts to add isLiked field
+        const processedPosts = posts.map(post => ({
+            ...post,
+            isLiked: userLikes.has(post.id),
+        }))
+
+        const hasMore = processedPosts.length > limit
+        const data = hasMore ? processedPosts.slice(0, -1) : processedPosts
         const nextCursor = hasMore ? (data[data.length - 1]?.id ?? null) : null
 
         return NextResponse.json(
             {
                 success: true,
-                data: posts,
+                data: processedPosts,
                 nextCursor,
             },
             { status: 200 }

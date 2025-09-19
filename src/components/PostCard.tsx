@@ -130,7 +130,7 @@ export default function PostCard({ post, onPostDeleted, isCurrentUserPost }: Pos
                     <p className="text-sm leading-relaxed">{post.content}</p>
                     <PostActions
                         postId={post.id}
-                        initialLiked={false}
+                        initialLiked={post.isLiked}
                         initialLikeCount={post.likeCount}
                         initialCommentCount={post.commentCount}
                     />

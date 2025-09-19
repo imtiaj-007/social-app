@@ -19,6 +19,4 @@ export type CreateComment = z.infer<typeof createCommentSchema>
 
 export type PostWithAuthor = Prisma.PostGetPayload<{
     include: { author: true }
-}>
-
-export type PostsWithAuthor = PostWithAuthor[]
+}> & { isLiked: boolean }
