@@ -66,6 +66,7 @@ export default function PostsFeed({
                         onPostDeleted={handlePostDeleted}
                         isCurrentUserPost={user?.id === post.author?.id}
                         isAdmin={user?.role === 'ADMIN'}
+                        showView
                     />
                 ))}
                 {!done && (

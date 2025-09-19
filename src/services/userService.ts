@@ -4,7 +4,7 @@ import { CreateUser, UpdateUser } from '@/types/user'
 
 interface ResponseData<T> {
     success: boolean
-    data?: T | unknown
+    data?: T
     error?: unknown
 }
 

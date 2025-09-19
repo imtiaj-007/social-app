@@ -1,6 +1,6 @@
 import { Post } from '@/generated/prisma'
 import { apiClient } from '@/lib/apiClient'
-import { CreatePost } from '@/types/post'
+import type { CreatePost, DetailedPost } from '@/types/post'
 
 interface ResponseData<T> {
     success: boolean
@@ -33,7 +33,7 @@ export async function getPosts(
     }
 }
 
-export async function getPostById(postId: string): Promise<ResponseData<Post>> {
+export async function getPostById(postId: string): Promise<ResponseData<DetailedPost>> {
     try {
         const response = await apiClient.get(`/posts/${postId}`)
         return response.data

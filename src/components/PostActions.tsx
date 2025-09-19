@@ -17,6 +17,7 @@ type PostActionsProps = {
     initialCommentCount?: number
     onCountsChange?: (next: { likeCount: number; commentCount: number; liked: boolean }) => void
     shareUrl?: string
+    showView: boolean
 }
 
 export function PostActions({
@@ -26,6 +27,7 @@ export function PostActions({
     initialCommentCount = 0,
     onCountsChange,
     shareUrl,
+    showView,
 }: PostActionsProps) {
     const { isAuthenticated } = useUser()
     const { updatePostLikeStatus } = usePosts()
@@ -125,16 +127,17 @@ export function PostActions({
                 Share
             </Button>
 
-            <Link href={`/feed/${postId}`}>
-                <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full"
-                    onClick={share}>
-                    <Eye className="mr-2 h-4 w-4" />
-                    View
-                </Button>
-            </Link>
+            {showView && (
+                <Link href={`/feed/${postId}`}>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full">
+                        <Eye className="mr-2 h-4 w-4" />
+                        View
+                    </Button>
+                </Link>
+            )}
         </div>
     )
 }
