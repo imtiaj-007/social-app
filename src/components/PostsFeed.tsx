@@ -54,24 +54,30 @@ export default function PostsFeed({
     }, [cursor, done, loading])
 
     return (
-        <div className="space-y-4">
-            {items.map(post => (
-                <PostCard
-                    key={post.id}
-                    post={post}
-                    onPostDeleted={handlePostDeleted}
-                    isCurrentUserPost={user?.id === post.author?.id}
-                    isAdmin={user?.role === 'ADMIN'}
-                />
-            ))}
-            {!done && (
-                <div
-                    ref={sentinelRef}
-                    className="h-10"
-                />
-            )}
-            {loading && <p className="text-sm text-muted-foreground">Loading…</p>}
-            {done && items.length === 0 && <p className="text-center">No posts yet.</p>}
+        <div className="space-y-0">
+            <div className="border-b p-4">
+                <h4 className="text-center">Public Feed</h4>
+            </div>
+            <div className="p-4 space-y-4">
+                {items.map(post => (
+                    <PostCard
+                        key={post.id}
+                        post={post}
+                        onPostDeleted={handlePostDeleted}
+                        isCurrentUserPost={user?.id === post.author?.id}
+                        isAdmin={user?.role === 'ADMIN'}
+                        showView
+                    />
+                ))}
+                {!done && (
+                    <div
+                        ref={sentinelRef}
+                        className="h-10"
+                    />
+                )}
+                {loading && <p className="text-sm text-muted-foreground">Loading…</p>}
+                {done && items.length === 0 && <p className="text-center">No posts yet.</p>}
+            </div>
         </div>
     )
 }

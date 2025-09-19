@@ -13,7 +13,7 @@ import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { PostForm } from '@/components/form/PostForm'
 import { createPost, getPostById, updatePost } from '@/services/postService'
-import type { CreatePost, PostWithAuthor } from '@/types/post'
+import type { CreatePost, DetailedPost } from '@/types/post'
 
 interface PostModalProps {
     trigger?: React.ReactNode
@@ -31,7 +31,7 @@ export function PostModal({
     isUpdate = false,
 }: PostModalProps) {
     const [open, setOpen] = useState<boolean>(false)
-    const [postData, setPostData] = useState<PostWithAuthor | null>(null)
+    const [postData, setPostData] = useState<DetailedPost | null>(null)
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
     useEffect(() => {
@@ -47,7 +47,7 @@ export function PostModal({
         try {
             const result = await getPostById(postId)
             if (result.success && result.data) {
-                setPostData(result.data as PostWithAuthor)
+                setPostData(result.data)
             } else {
                 toast.error('Failed to fetch post data')
             }

@@ -1,3 +1,5 @@
+'use client'
+
 import Link from 'next/link'
 import Image from 'next/image'
 import { useState } from 'react'
@@ -19,6 +21,7 @@ interface PostCardProps {
     onPostDeleted?: () => void
     isCurrentUserPost: boolean
     isAdmin: boolean
+    showView: boolean
 }
 
 export default function PostCard({
@@ -26,6 +29,7 @@ export default function PostCard({
     onPostDeleted,
     isCurrentUserPost,
     isAdmin,
+    showView,
 }: PostCardProps) {
     const [loading, setLoading] = useState<boolean>(false)
 
@@ -147,6 +151,7 @@ export default function PostCard({
                         initialLiked={post.isLiked}
                         initialLikeCount={post.likeCount}
                         initialCommentCount={post.commentCount}
+                        showView={showView}
                     />
                 </div>
                 {post.imageUrl && (

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { toast } from 'sonner'
 import {
     Dialog,
     DialogContent,
@@ -9,8 +10,7 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { toast } from 'sonner'
+import { Textarea } from '@/components/ui/textarea'
 import { createComment } from '@/services/postService'
 import { useUser } from '@/hooks/useUser'
 
@@ -59,7 +59,7 @@ export function CommentModal({ trigger, postId, onCommentAdded }: CommentModalPr
                     <DialogTitle>Add a Comment</DialogTitle>
                 </DialogHeader>
                 <div className="space-y-4">
-                    <Input
+                    <Textarea
                         placeholder="Write your comment..."
                         value={commentText}
                         onChange={e => setCommentText(e.target.value)}
