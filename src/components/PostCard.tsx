@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useState } from 'react'
-import { Edit, Trash } from 'lucide-react'
+import { Edit, Shield, Trash } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
 
 import { toast } from 'sonner'
@@ -18,9 +18,15 @@ interface PostCardProps {
     post: PostWithAuthor
     onPostDeleted?: () => void
     isCurrentUserPost: boolean
+    isAdmin: boolean
 }
 
-export default function PostCard({ post, onPostDeleted, isCurrentUserPost }: PostCardProps) {
+export default function PostCard({
+    post,
+    onPostDeleted,
+    isCurrentUserPost,
+    isAdmin,
+}: PostCardProps) {
     const [loading, setLoading] = useState<boolean>(false)
 
     const getInitials = (
@@ -93,6 +99,12 @@ export default function PostCard({ post, onPostDeleted, isCurrentUserPost }: Pos
                             {formatDistanceToNow(new Date(post.createdAt), { addSuffix: true })}
                         </p>
                     </div>
+                    {post.author.role === 'ADMIN' && (
+                        <Badge className="ml-2">
+                            <Shield className="size-4" />
+                            Admin
+                        </Badge>
+                    )}
                 </Link>
                 <div className="flex items-center gap-4">
                     <Badge
@@ -100,7 +112,7 @@ export default function PostCard({ post, onPostDeleted, isCurrentUserPost }: Pos
                         className="text-xs capitalize">
                         {post.category.toLowerCase()}
                     </Badge>
-                    {isCurrentUserPost ? (
+                    {isCurrentUserPost || isAdmin ? (
                         <>
                             <ConfirmationModal
                                 trigger={<Trash className="size-4 cursor-pointer" />}
@@ -111,11 +123,13 @@ export default function PostCard({ post, onPostDeleted, isCurrentUserPost }: Pos
                                 onConfirm={handleDeletePost}
                                 isLoading={loading}
                             />
-                            <PostModal
-                                trigger={<Edit className="size-4 cursor-pointer" />}
-                                postId={post.id}
-                                isUpdate={true}
-                            />
+                            {isCurrentUserPost && (
+                                <PostModal
+                                    trigger={<Edit className="size-4 cursor-pointer" />}
+                                    postId={post.id}
+                                    isUpdate={true}
+                                />
+                            )}
                         </>
                     ) : (
                         <>

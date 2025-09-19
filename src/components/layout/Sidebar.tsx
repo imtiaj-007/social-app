@@ -2,27 +2,72 @@
 
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { HomeIcon, MessageSquareIcon, BellIcon, UserRoundIcon, Pencil } from 'lucide-react'
+import {
+    HomeIcon,
+    MessageSquareIcon,
+    BellIcon,
+    UserRoundIcon,
+    Pencil,
+    LogOut,
+    UsersIcon,
+} from 'lucide-react'
 import { PostModal } from '@/components/modal/PostModal'
 import { useUser } from '@/hooks/useUser'
+import { signout } from '@/lib/actions/auth.action'
+import { toast } from 'sonner'
 
 export default function AppSidebar() {
     const { user } = useUser()
+
+    const handleLogout = async () => {
+        const res = await signout()
+        if (!res.success) {
+            toast.error('Logout failed', {
+                description: 'Unable to sign out. Please try again.',
+            })
+            return
+        }
+        toast.success('Logged out successfully', {
+            description: 'You have been signed out. See you next time!',
+        })
+    }
+
     return (
         <div className="w-56 flex flex-col justify-between border-r p-4">
-            <ul className="space-y-0.5">
-                <li className="flex items-center text-light-100 hover:text-primary-200 transition-colors cursor-pointer py-2 px-3 rounded-lg hover:bg-accent/50">
-                    <HomeIcon className="w-4 h-4 mr-2" />
-                    Home
-                </li>
-                <li className="flex items-center text-light-100 hover:text-primary-200 transition-colors cursor-pointer py-2 px-3 rounded-lg hover:bg-accent/50">
-                    <MessageSquareIcon className="w-4 h-4 mr-2" />
-                    Messages
-                </li>
-                <li className="flex items-center text-light-100 hover:text-primary-200 transition-colors cursor-pointer py-2 px-3 rounded-lg hover:bg-accent/50">
-                    <BellIcon className="w-4 h-4 mr-2" />
-                    Notifications
-                </li>
+            <ul className="space-y-0 5">
+                {[
+                    {
+                        icon: HomeIcon,
+                        label: 'Home',
+                        href: '/feed',
+                    },
+                    {
+                        icon: MessageSquareIcon,
+                        label: 'Messages',
+                        href: '/feed',
+                    },
+                    {
+                        icon: BellIcon,
+                        label: 'Notifications',
+                        href: '/feed',
+                    },
+                    {
+                        icon: UsersIcon,
+                        label: 'User Management',
+                        href: '/users',
+                    },
+                ].map((item, idx) => {
+                    if (idx > 2 && user?.role !== 'ADMIN') return null
+                    return (
+                        <Link
+                            key={item.label}
+                            href={item.href}
+                            className="flex items-center text-light-100 hover:text-primary-200 transition-colors cursor-pointer py-2 px-3 rounded-lg hover:bg-accent/50">
+                            <item.icon className="w-4 h-4 mr-2" />
+                            {item.label}
+                        </Link>
+                    )
+                })}
             </ul>
             <div className="space-y-2">
                 <PostModal
@@ -45,6 +90,14 @@ export default function AppSidebar() {
                         Profile
                     </Button>
                 </Link>
+                <Button
+                    type="button"
+                    variant="destructive"
+                    onClick={handleLogout}
+                    className="w-full mt-2">
+                    Logout
+                    <LogOut />
+                </Button>
             </div>
         </div>
     )
