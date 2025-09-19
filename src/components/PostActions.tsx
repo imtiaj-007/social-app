@@ -5,9 +5,10 @@ import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { CommentModal } from '@/components/modal/CommentModal'
 import { likePost, unlikePost } from '@/services/postService'
-import { MessageCircle, Share2, ThumbsUp } from 'lucide-react'
+import { Eye, MessageCircle, Share2, ThumbsUp } from 'lucide-react'
 import { useUser } from '@/hooks/useUser'
 import { usePosts } from '@/hooks/usePosts'
+import Link from 'next/link'
 
 type PostActionsProps = {
     postId: string
@@ -89,11 +90,11 @@ export function PostActions({
     }
 
     return (
-        <div className="flex items-center gap-3 pt-2">
+        <div className="grid grid-cols-4 gap-3 pt-2">
             <Button
                 variant={liked ? 'default' : 'outline'}
                 size="sm"
-                className="w-24"
+                className="w-full"
                 onClick={toggleLike}
                 disabled={busy}>
                 <ThumbsUp className="mr-2 h-4 w-4" />
@@ -105,7 +106,7 @@ export function PostActions({
                     <Button
                         variant="outline"
                         size="sm"
-                        className="w-24"
+                        className="w-full"
                         disabled={busy}>
                         <MessageCircle className="mr-2 h-4 w-4" />
                         {commentCount}
@@ -118,11 +119,22 @@ export function PostActions({
             <Button
                 variant="outline"
                 size="sm"
-                className="w-24"
+                className="w-full"
                 onClick={share}>
                 <Share2 className="mr-2 h-4 w-4" />
                 Share
             </Button>
+
+            <Link href={`/feed/${postId}`}>
+                <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full"
+                    onClick={share}>
+                    <Eye className="mr-2 h-4 w-4" />
+                    View
+                </Button>
+            </Link>
         </div>
     )
 }

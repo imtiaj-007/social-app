@@ -33,8 +33,11 @@ export default function AppSidebar() {
     }
 
     return (
-        <div className="w-56 flex flex-col justify-between border-r p-4">
-            <ul className="space-y-0 5">
+        <div className="w-56 flex flex-col justify-between border-r">
+            <div className="p-4 border-b">
+                <h4>Social App</h4>
+            </div>
+            <ul className="space-y-0 p-4">
                 {[
                     {
                         icon: HomeIcon,
@@ -69,7 +72,7 @@ export default function AppSidebar() {
                     )
                 })}
             </ul>
-            <div className="space-y-2">
+            <div className="space-y-2 p-4">
                 <PostModal
                     trigger={
                         <Button
