@@ -11,20 +11,12 @@ import { useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { toast } from 'sonner'
 
-interface UserManagementProps {
-    searchParams: {
-        search?: string
-        page?: string
-        limit?: string
-    }
-}
-
-export default function UserManagement({ searchParams }: UserManagementProps) {
+export default function UserManagement() {
     const router = useRouter()
-    const params = useSearchParams()
-    const search = searchParams.search || ''
-    const page = parseInt(searchParams.page || '1')
-    const limit = parseInt(searchParams.limit || '20')
+    const searchParams = useSearchParams()
+    const search = searchParams.get('search') || ''
+    const page = parseInt(searchParams.get('page') || '1')
+    const limit = parseInt(searchParams.get('limit') || '20')
 
     const [users, setUsers] = useState<Profile[]>([])
     const [loading, setLoading] = useState(true)
@@ -53,7 +45,7 @@ export default function UserManagement({ searchParams }: UserManagementProps) {
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault()
-        const newParams = new URLSearchParams(params.toString())
+        const newParams = new URLSearchParams(searchParams.toString())
         newParams.set('search', searchValue)
         newParams.set('page', '1')
         router.push(`/users?${newParams.toString()}`)
