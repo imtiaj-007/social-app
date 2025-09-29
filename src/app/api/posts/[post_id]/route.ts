@@ -115,7 +115,7 @@ export async function DELETE(
 
         const { post_id } = await params
 
-        // Check if post exists and belongs to user
+        // Check if post exists
         const existingPost = await prisma.post.findUnique({
             where: { id: post_id },
             select: { authorId: true },
@@ -125,7 +125,14 @@ export async function DELETE(
             return NextResponse.json({ success: false, message: 'Post not found' }, { status: 404 })
         }
 
-        if (existingPost.authorId !== user.id) {
+        // Check if user is admin
+        const profile = await prisma.profile.findUnique({
+            where: { id: user.id },
+            select: { role: true },
+        })
+
+        // Allow deletion if user is admin OR if post belongs to user
+        if (existingPost.authorId !== user.id && (!profile || profile.role !== 'ADMIN')) {
             return NextResponse.json(
                 { success: false, message: 'Forbidden: You can only delete your own posts' },
                 { status: 403 }

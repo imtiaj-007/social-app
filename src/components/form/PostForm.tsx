@@ -41,6 +41,13 @@ export const PostForm = ({
         const file = event.target.files?.[0]
         if (!file) return
 
+        // Check file type
+        if (file.type !== 'image/png' && file.type !== 'image/jpeg') {
+            toast.error('Only PNG and JPEG images are allowed')
+            event.target.value = ''
+            return
+        }
+
         // Check file size (2MB = 2 * 1024 * 1024 bytes)
         if (file.size > 2 * 1024 * 1024) {
             toast.error('File size must be under 2MB')

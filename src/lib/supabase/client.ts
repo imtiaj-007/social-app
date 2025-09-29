@@ -20,7 +20,7 @@ const options: SupabaseClientOptions<'public'> = {
 
 export function createClient(): SupabaseClient<Database> {
     const supabaseURL: string = process.env.NEXT_PUBLIC_SUPABASE_URL!
-    const supabasePublishableKey: string = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!
+    const supabaseAnonKey: string = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
-    return createBrowserClient<Database>(supabaseURL, supabasePublishableKey, options)
+    return createBrowserClient<Database>(supabaseURL, supabaseAnonKey, options)
 }
